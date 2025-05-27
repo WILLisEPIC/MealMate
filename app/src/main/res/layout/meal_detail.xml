@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MealDetail">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:elevation="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardCornerRadius="20dp"
+                android:layout_margin="5dp">
+
+                <ImageView
+                    android:id="@+id/MealPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_back_white"
+                android:elevation="5dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/back_button_state"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <ImageButton
+                android:id="@+id/addmeal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/add_big"
+                android:elevation="5dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/back_button_state"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/MealName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/meal_menu"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_margin="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/cardView"/>
+
+            <TextView
+                android:id="@+id/IngredientTitle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Ingredients"
+                android:gravity="center"
+                android:textColor="@color/milk"
+                android:background="@color/brown"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/MealName"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Ingredient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/IngredientTitle" />
+
+            <TextView
+                android:id="@+id/PreparationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Preparations"
+                android:gravity="center"
+                android:textColor="@color/milk"
+                android:background="@color/brown"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/Ingredient"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Preparation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toTopOf="@+id/delete"
+                app:layout_constraintTop_toBottomOf="@+id/PreparationTitle"/>
+
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:textAllCaps="false"
+                android:visibility="invisible"
+                android:textColor="@color/milk"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="30dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/logout_button_state" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

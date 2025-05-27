@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MealMate</string>
+    <string name="meal_menu">Meal Plan</string>
+    <string name="grocery_menu">Groceries</string>
+    <string name="profile_menu">Profile</string>
+    <string name="none">None</string>
+    <string name="signup"><u>Sign in</u></string>
+</resources>

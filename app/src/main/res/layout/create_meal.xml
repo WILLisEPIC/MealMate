@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create New Meal"
+                android:textColor="@color/brown2"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_marginTop="70dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="18sp"
+                android:textColor="@color/brown2"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            <EditText
+                android:id="@+id/MealName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your meal name"
+                android:textColor="@color/brown2"
+                android:textSize="18sp"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_design"/>
+
+            <TextView
+                android:id="@+id/nameError"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:visibility="invisible"
+                android:layout_margin="5dp"
+                app:layout_constraintStart_toStartOf="@+id/MealName"
+                app:layout_constraintTop_toBottomOf="@+id/MealName"
+                app:layout_constraintBottom_toTopOf="@+id/txtPhoto"/>
+
+            <TextView
+                android:id="@+id/txtPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Photo"
+                android:textSize="20sp"
+                android:textColor="@color/brown2"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nameError" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ImageCard"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintTop_toBottomOf="@+id/txtPhoto">
+
+                <ImageView
+                    android:id="@+id/MealPhoto"
+                    android:scaleType="centerCrop"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/select_image_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/photoError"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:visibility="invisible"
+                android:layout_margin="5dp"
+                app:layout_constraintStart_toStartOf="@+id/ImageCard"
+                app:layout_constraintTop_toBottomOf="@+id/ImageCard"
+                app:layout_constraintBottom_toTopOf="@+id/txtIngredients"/>
+
+            <TextView
+                android:id="@+id/txtIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingredients"
+                android:textSize="20sp"
+                android:textColor="@color/brown2"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photoError" />
+
+            <LinearLayout
+                android:id="@+id/ingredient_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                app:layout_constraintTop_toBottomOf="@+id/txtIngredients"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:id="@+id/add_ingredient"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="Add new ingredient"
+                android:textSize="16sp"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/ingredient_container"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/txtPreparations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preparations"
+                android:textSize="20sp"
+                android:textColor="@color/brown2"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_ingredient" />
+
+            <LinearLayout
+                android:id="@+id/preparation_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                app:layout_constraintTop_toBottomOf="@+id/txtPreparations"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:id="@+id/add_preparation"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:text="Add new preparation"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/preparation_container"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/confirm_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Meal"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:textColor="@color/milk"
+                android:background="@drawable/action_button_state"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_preparation" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/arrow_back_orange"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

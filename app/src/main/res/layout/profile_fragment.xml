@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/orange"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:elevation="5dp"
+        app:shapeAppearanceOverlay="@style/Circular"
+        app:strokeColor="@color/milk"
+        android:clickable="true"
+        android:focusable="true"
+        app:strokeWidth="5dp"
+        android:padding="5dp"
+        android:layout_marginTop="50dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/profile_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/Username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="28sp"
+            android:textColor="@drawable/edit_profile_text"
+            android:layout_marginTop="100dp"
+            android:clickable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/Email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="20sp"
+            android:textColor="@drawable/edit_profile_text"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Username"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/Email"            android:layout_marginTop="30dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            app:passwordToggleTint="@color/orange"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false">
+            <EditText
+                android:id="@+id/CurrentPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Current Password"
+                android:inputType="textPassword"
+                android:background="@drawable/edittext_design"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/currentpasswordError"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="@+id/layout_password"
+            app:layout_constraintTop_toBottomOf="@+id/layout_password"
+            app:layout_constraintBottom_toTopOf="@+id/layout_newpassword"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_newpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/layout_password"            android:layout_marginTop="30dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            app:passwordToggleTint="@color/orange"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false">
+            <EditText
+                android:id="@+id/NewPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="New Password"
+                android:inputType="textPassword"
+                android:background="@drawable/edittext_design"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/newpasswordError"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_margin="5dp"
+            app:layout_constraintBottom_toTopOf="@id/ChangePassword"
+            app:layout_constraintStart_toStartOf="@+id/layout_newpassword"
+            app:layout_constraintTop_toBottomOf="@+id/layout_newpassword" />
+
+        <Button
+            android:id="@+id/ChangePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:textAllCaps="false"
+            android:textColor="@color/milk"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/newpasswordError"
+            android:textSize="18sp"
+            android:background="@drawable/action_button_state" />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:textAllCaps="false"
+            android:textColor="@color/milk"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/ChangePassword"
+            android:textSize="18sp"
+            android:background="@drawable/logout_button_state" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

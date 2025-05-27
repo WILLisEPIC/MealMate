@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/milk"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    tools:context=".Signup">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/milk"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/arrow_back_orange"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign up"
+            android:textColor="@color/brown2"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/back"/>
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? "
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <TextView
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup"
+            android:textSize="16sp"
+            android:textColor="@drawable/textview_state2"
+            android:clickable="true"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toEndOf="@+id/text1"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <TextView
+            android:id="@+id/txtUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="20sp"
+            android:textColor="@color/brown2"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text1" />
+
+        <EditText
+            android:id="@+id/Username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your name"
+            android:textColor="@color/brown2"
+            android:textSize="18sp"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="22dp"
+            app:layout_constraintTop_toBottomOf="@+id/txtUser"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_design"/>
+
+        <TextView
+            android:id="@+id/usernameError"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="@+id/Username"
+            app:layout_constraintTop_toBottomOf="@+id/Username"
+            app:layout_constraintBottom_toTopOf="@+id/txtEmail"/>
+
+        <TextView
+            android:id="@+id/txtEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="20sp"
+            android:textColor="@color/brown2"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/usernameError" />
+
+        <EditText
+            android:id="@+id/Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your email"
+            android:textColor="@color/brown2"
+            android:textSize="18sp"
+            android:inputType="textEmailAddress"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="22dp"
+            app:layout_constraintTop_toBottomOf="@+id/txtEmail"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_design"/>
+
+        <TextView
+            android:id="@+id/emailError"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="@+id/Email"
+            app:layout_constraintTop_toBottomOf="@+id/Email"
+            app:layout_constraintBottom_toTopOf="@+id/txtPassword"/>
+
+        <TextView
+            android:id="@+id/txtPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="20sp"
+            android:textColor="@color/brown2"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emailError" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/txtPassword"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="22dp"
+            app:passwordToggleTint="@color/orange"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false">
+            <EditText
+                android:id="@+id/Password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="8 - 12 characters"
+                android:textSize="18sp"
+                android:textColor="@color/brown2"
+                android:inputType="textPassword"
+                android:background="@drawable/edittext_design"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/passwordError"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="@+id/layout_password"
+            app:layout_constraintTop_toBottomOf="@+id/layout_password"
+            app:layout_constraintBottom_toTopOf="@+id/txtConPassword"/>
+
+        <TextView
+            android:id="@+id/txtConPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm Password"
+            android:textSize="20sp"
+            android:textColor="@color/brown2"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/passwordError" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_conpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/txtConPassword"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="22dp"
+            app:passwordToggleTint="@color/orange"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false">
+        <EditText
+            android:id="@+id/ConPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="8 - 12 characters"
+            android:textColor="@color/brown2"
+            android:textSize="18sp"
+            android:inputType="textPassword"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_design"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/conpasswordError"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="@+id/layout_conpassword"
+            app:layout_constraintTop_toBottomOf="@+id/layout_conpassword"
+            app:layout_constraintBottom_toTopOf="@+id/signup"/>
+
+        <Button
+            android:id="@+id/signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Account"
+            android:textAllCaps="false"
+            android:textColor="@color/milk"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ConPassword"
+            android:textSize="18sp"
+            android:background="@drawable/action_button_state" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

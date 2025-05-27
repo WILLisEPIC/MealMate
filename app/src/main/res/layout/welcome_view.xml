@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/welcome">
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Login"
+        android:textColor="@drawable/welcome_login_text_state"
+        android:shadowColor="@color/brown2"
+        android:shadowRadius="2"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:background="@drawable/welcome_login_state"
+        app:layout_constraintBottom_toTopOf="@+id/signup"/>
+
+    <Button
+        android:id="@+id/signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:textColor="@color/milk"
+        android:background="@drawable/default_button_state"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/navigation_meal"
+        android:icon="@drawable/bowl_icon"
+        android:iconTint="@color/orange"
+        android:title="@string/meal_menu"
+        android:background="@drawable/bottom_item_selector"/>
+
+    <item
+        android:id="@+id/navigation_grocery"
+        android:icon="@drawable/basket_icon"
+        android:iconTint="@color/orange"
+        android:title="@string/grocery_menu"
+        android:background="@drawable/bottom_item_selector"/>
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/baseline_person_24"
+        android:iconTint="@color/orange"
+        android:title="@string/profile_menu"
+        android:background="@drawable/bottom_item_selector"/>
+
+</menu>
