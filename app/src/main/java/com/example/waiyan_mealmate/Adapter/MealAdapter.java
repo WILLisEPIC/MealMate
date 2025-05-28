@@ -3,32 +3,35 @@ package com.example.waiyan_mealmate.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.waiyan_mealmate.DataHolder.MealData;
 import com.example.waiyan_mealmate.Database.DBHelper;
 import com.example.waiyan_mealmate.MealDetail;
+import com.example.waiyan_mealmate.Message;
 import com.example.waiyan_mealmate.R;
 
 import java.util.ArrayList;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
 
-    Context context;
-    ArrayList<MealData> MealDataArrayList;
-    DBHelper dbHelper;
-    int userID;
+    private Context context;
+    private ArrayList<MealData> MealDataArrayList;
+    private DBHelper dbHelper;
+    private String userID;
 
-    public MealAdapter(Context context, ArrayList<MealData> MealDataArrayList, int userID) {
+    public MealAdapter(Context context, ArrayList<MealData> MealDataArrayList, String userID) {
         this.context = context;
         this.MealDataArrayList = MealDataArrayList;
         this.userID = userID;
@@ -46,7 +49,21 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MealAdapter.ViewHolder holder, int position) {
         holder.MealID.setText(String.valueOf(MealDataArrayList.get(position).getMealId()));
-        holder.mealPhoto.setImageResource(MealDataArrayList.get(position).getMealPhoto());
+        if (MealDataArrayList.get(position).getMealPhotoId() != 0){
+            holder.mealPhoto.setImageResource(MealDataArrayList.get(position).getMealPhotoId());
+        } else {
+            byte[] photo = MealDataArrayList.get(position).getMealPhotoByte();
+            if (photo == null){
+                holder.mealPhoto.setImageResource(R.drawable.login_logo);
+            } else {
+                Glide.with(context)
+                        .asBitmap()
+                        .load(photo)
+                        .placeholder(R.drawable.login_logo)
+                        .error(R.drawable.login_logo)
+                        .into(holder.mealPhoto);
+            }
+        }
         holder.MealName.setText(MealDataArrayList.get(position).getMealName());
 
         Cursor cursor = dbHelper.selectUserMealData(MealDataArrayList.get(position).getMealId(), userID);
@@ -86,17 +103,17 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
                 MealData clickedMeal = MealDataArrayList.get(position);
                 int mealId = clickedMeal.getMealId();
                 if (v.getId() == R.id.addmeal) {
-                    Cursor cursor = dbHelper.selectUserMealData(mealId,userID);
+                    Cursor cursor = dbHelper.selectUserMealData(mealId, userID);
                     if (cursor != null && cursor.moveToFirst()){
-                        boolean check = dbHelper.deleteUserMeal(mealId,userID);
+                        boolean check = dbHelper.deleteUserMeal(mealId, userID);
                         if (check) {
                             Cursor ingredient = dbHelper.selectMealIngredient(mealId);
                             if (ingredient != null && ingredient.moveToFirst()){
                                 do{
                                     int id = ingredient.getInt(ingredient.getColumnIndexOrThrow("IngredientID"));
-                                    boolean check2 = dbHelper.deleteUserIngredient(id,userID);
+                                    boolean check2 = dbHelper.deleteGrocery(id, userID);
                                     if (!check2){
-                                        showErrorToast("Error!");
+                                        new Message("Error!", context).showErrorToast();
                                         break;
                                     }
                                 }while (ingredient.moveToNext());
@@ -104,7 +121,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
                             addORremove.setImageResource(R.drawable.add_circle);
                             mealPhoto.setImageAlpha(255);
                         }else {
-                            showErrorToast("Error!");
+                            new Message("Error!", context).showErrorToast();
                         }
                     } else {
                         if(dbHelper.insertUserMeal(mealId,userID)){
@@ -112,9 +129,9 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
                             if (ingredient != null && ingredient.moveToFirst()){
                                 do{
                                     int id = ingredient.getInt(ingredient.getColumnIndexOrThrow("IngredientID"));
-                                    boolean check = dbHelper.insertUserIngredient(id,userID);
+                                    boolean check = dbHelper.insertGrocery(id,userID);
                                     if (!check){
-                                        showErrorToast("Meal Selection Failed!");
+                                        new Message("Meal Selection Failed!", context).showErrorToast();
                                         break;
                                     }
                                 }while (ingredient.moveToNext());
@@ -122,7 +139,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
                             addORremove.setImageResource(R.drawable.remove_circle);
                             mealPhoto.setImageAlpha(80);
                         } else {
-                            showErrorToast("Meal Selection Failed!");
+                            new Message("Meal Selection Failed!", context).showErrorToast();
                         }
                     }
                 } else {
@@ -132,25 +149,5 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
                 }
             }
         }
-    }
-
-    private void showErrorToast(String message) {
-        View toastView = LayoutInflater.from(context).inflate(R.layout.error_toast, null);
-        TextView toastMessage = toastView.findViewById(R.id.error_toast_message);
-        toastMessage.setText(message);
-        Toast toast = new Toast(context);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.show();
-    }
-
-    private void showCompleteToast(String message) {
-        View toastView = LayoutInflater.from(context).inflate(R.layout.complete_toast, null);
-        TextView toastMessage = toastView.findViewById(R.id.complete_toast_message);
-        toastMessage.setText(message);
-        Toast toast = new Toast(context);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.show();
     }
 }

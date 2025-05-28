@@ -4,30 +4,28 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.waiyan_mealmate.Database.DBHelper;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class Signup extends AppCompatActivity implements View.OnClickListener{
 
-    ImageButton back;
-    TextView login,errorUsername,errorEmail,errorPassword,errorConPassword;
-    Button signup;
-    DBHelper dbHelper;
-    EditText Username,Email,Password,ConPassword;
-    String username,email,password,conpassword;
+    private FirebaseAuth mAuth;
+    private ImageButton ibBack;
+    private TextView tvLogin, tvUsernameError, tvEmailError, tvPasswordError, tvConfirmPasswordError;
+    private Button btnSignup;
+    private EditText etUsername, etEmail, etPassword, etConfirmPassword;
+    private String username,email,password,conpassword;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,32 +33,32 @@ public class Signup extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.register_layout);
 
         dbHelper = new DBHelper(this);
+        mAuth = FirebaseAuth.getInstance();
+        ibBack = findViewById(R.id.back);
+        tvLogin = findViewById(R.id.login);
+        btnSignup = findViewById(R.id.signup);
 
-        back = findViewById(R.id.back);
-        login = findViewById(R.id.login);
-        signup = findViewById(R.id.signup);
+        ibBack.setOnClickListener(this);
+        tvLogin.setOnClickListener(this);
+        btnSignup.setOnClickListener(this);
 
-        back.setOnClickListener(this);
-        login.setOnClickListener(this);
-        signup.setOnClickListener(this);
+        etUsername = findViewById(R.id.Username);
+        etEmail = findViewById(R.id.Email);
+        etPassword = findViewById(R.id.Password);
+        etConfirmPassword = findViewById(R.id.ConPassword);
 
-        Username = findViewById(R.id.Username);
-        Email = findViewById(R.id.Email);
-        Password = findViewById(R.id.Password);
-        ConPassword = findViewById(R.id.ConPassword);
-
-        errorEmail = findViewById(R.id.emailError);
-        errorUsername = findViewById(R.id.usernameError);
-        errorPassword = findViewById(R.id.passwordError);
-        errorConPassword = findViewById(R.id.conpasswordError);
+        tvEmailError = findViewById(R.id.emailError);
+        tvUsernameError = findViewById(R.id.usernameError);
+        tvPasswordError = findViewById(R.id.passwordError);
+        tvConfirmPasswordError = findViewById(R.id.conpasswordError);
     }
 
     @Override
     public void onClick(View v) {
-        username = Username.getText().toString().trim();
-        email = Email.getText().toString().trim();
-        password = Password.getText().toString().trim();
-        conpassword = ConPassword.getText().toString().trim();
+        username = etUsername.getText().toString().trim();
+        email = etEmail.getText().toString().trim();
+        password = etPassword.getText().toString().trim();
+        conpassword = etConfirmPassword.getText().toString().trim();
         if(v.getId() == R.id.back){
             startActivity(new Intent(Signup.this, MainActivity.class));
             finish();
@@ -68,148 +66,136 @@ public class Signup extends AppCompatActivity implements View.OnClickListener{
             startActivity(new Intent(Signup.this, Login.class));
             finish();
         } else {
-            Username.setBackgroundResource(R.drawable.edittext_design);
-            Email.setBackgroundResource(R.drawable.edittext_design);
-            Password.setBackgroundResource(R.drawable.edittext_design);
-            ConPassword.setBackgroundResource(R.drawable.edittext_design);
-            errorUsername.setText(null);
-            errorUsername.setVisibility(View.INVISIBLE);
-            errorEmail.setText(null);
-            errorEmail.setVisibility(View.INVISIBLE);
-            errorPassword.setText(null);
-            errorPassword.setVisibility(View.INVISIBLE);
-            errorConPassword.setText(null);
-            errorConPassword.setVisibility(View.INVISIBLE);
+
+            restart();
 
             if (username.isEmpty() && email.isEmpty() && password.isEmpty() && conpassword.isEmpty()) {
                 
-                Username.setBackgroundResource(R.drawable.edittext_error);
-                Email.setBackgroundResource(R.drawable.edittext_error);
-                Password.setBackgroundResource(R.drawable.edittext_error);
-                ConPassword.setBackgroundResource(R.drawable.edittext_error);
+                etUsername.setBackgroundResource(R.drawable.edittext_error);
+                etEmail.setBackgroundResource(R.drawable.edittext_error);
+                etPassword.setBackgroundResource(R.drawable.edittext_error);
+                etConfirmPassword.setBackgroundResource(R.drawable.edittext_error);
 
-                errorUsername.setText("*Please enter username");
-                errorUsername.setVisibility(View.VISIBLE);
-                errorEmail.setText("*Please enter email");
-                errorEmail.setVisibility(View.VISIBLE);
-                errorPassword.setText("*Please enter password");
-                errorPassword.setVisibility(View.VISIBLE);
-                errorConPassword.setText("*Please enter confirm password");
-                errorConPassword.setVisibility(View.VISIBLE);
+                tvUsernameError.setText("*Please enter username");
+                tvUsernameError.setVisibility(View.VISIBLE);
+                tvEmailError.setText("*Please enter email");
+                tvEmailError.setVisibility(View.VISIBLE);
+                tvPasswordError.setText("*Please enter password");
+                tvPasswordError.setVisibility(View.VISIBLE);
+                tvConfirmPasswordError.setText("*Please enter confirm password");
+                tvConfirmPasswordError.setVisibility(View.VISIBLE);
+                return;
                 
-            } else if (username.isEmpty()) {
-                
-                Username.setBackgroundResource(R.drawable.edittext_error);
-                errorUsername.setText("*Please enter username");
-                errorUsername.setVisibility(View.VISIBLE);
-                
-            } else if(username.length() > 30){
-
-                Username.setBackgroundResource(R.drawable.edittext_error);
-                errorUsername.setText("*Username cannot contain more than 30 characters");
-                errorUsername.setVisibility(View.VISIBLE);
-
-            } else if (email.isEmpty()) {
-
-                Email.setBackgroundResource(R.drawable.edittext_error);
-                errorEmail.setText("*Please enter email");
-                errorEmail.setVisibility(View.VISIBLE);
-
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-
-                Email.setBackgroundResource(R.drawable.edittext_error);
-                errorEmail.setText("*Invalid Email");
-                errorEmail.setVisibility(View.VISIBLE);
-
-            } else if (emailNotAvailable(email)) {
-
-                Email.setBackgroundResource(R.drawable.edittext_error);
-                errorEmail.setText("*This email already exists");
-                errorEmail.setVisibility(View.VISIBLE);
-
-            } else if (password.isEmpty()) {
-
-                Password.setBackgroundResource(R.drawable.edittext_error);
-                errorPassword.setText("*Please enter password");
-                errorPassword.setVisibility(View.VISIBLE);
-
-            } else if (!isPasswordValid(password)) {
-
-                Password.setBackgroundResource(R.drawable.edittext_error);
-                errorPassword.setText("*Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character");
-                errorPassword.setVisibility(View.VISIBLE);
-
-            } else if (conpassword.isEmpty()) {
-                
-                ConPassword.setBackgroundResource(R.drawable.edittext_error);
-                errorConPassword.setText("*Please enter confirm password");
-                errorConPassword.setVisibility(View.VISIBLE);
-
-            }  else if (!conpassword.equals(password)) {
-
-                Password.setBackgroundResource(R.drawable.edittext_error);
-                ConPassword.setBackgroundResource(R.drawable.edittext_error);
-                errorConPassword.setText("*Password and Confirm Password must be the same");
-                errorConPassword.setVisibility(View.VISIBLE);
-                
-            } else {
-
-                boolean check = dbHelper.insertUserData(username, email, password);
-                if(check) {
-                    LayoutInflater inflater = getLayoutInflater();
-                    View toastCompleteView = inflater.inflate(R.layout.complete_toast, null);
-                    TextView completeToastMessage = toastCompleteView.findViewById(R.id.complete_toast_message);
-                    completeToastMessage.setText("Registration Complete");
-                    Toast completeToast = new Toast(Signup.this);
-                    completeToast.setView(toastCompleteView);
-                    completeToast.setDuration(Toast.LENGTH_LONG);
-                    completeToast.show();
-
-                    Username.setText(null);
-                    Email.setText(null);
-                    Password.setText(null);
-                    ConPassword.setText(null);
-                } else {
-                    // Show registration error toast
-                    LayoutInflater inflater = getLayoutInflater();
-                    View toastErrorView = inflater.inflate(R.layout.error_toast, null);
-                    TextView errorToastMessage = toastErrorView.findViewById(R.id.error_toast_message);
-                    errorToastMessage.setText("Registration Failed!");
-                    Toast errorToast = new Toast(Signup.this);
-                    errorToast.setView(toastErrorView);
-                    errorToast.setDuration(Toast.LENGTH_LONG);
-                    errorToast.show();
-                }
             }
+            if (username.isEmpty()) {
+                etUsername.setBackgroundResource(R.drawable.edittext_error);
+                tvUsernameError.setText("*Please enter username");
+                tvUsernameError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if(username.length() > 30){
+                etUsername.setBackgroundResource(R.drawable.edittext_error);
+                tvUsernameError.setText("*Username cannot contain more than 30 characters");
+                tvUsernameError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (email.isEmpty()) {
+                etEmail.setBackgroundResource(R.drawable.edittext_error);
+                tvEmailError.setText("*Please enter email");
+                tvEmailError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                etEmail.setBackgroundResource(R.drawable.edittext_error);
+                tvEmailError.setText("*Invalid Email");
+                tvEmailError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (password.isEmpty()) {
+                etPassword.setBackgroundResource(R.drawable.edittext_error);
+                tvPasswordError.setText("*Please enter password");
+                tvPasswordError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!isPasswordValid(password)) {
+                etPassword.setBackgroundResource(R.drawable.edittext_error);
+                tvPasswordError.setText("*Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character");
+                tvPasswordError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (conpassword.isEmpty()) {
+                etConfirmPassword.setBackgroundResource(R.drawable.edittext_error);
+                tvConfirmPasswordError.setText("*Please enter confirm password");
+                tvConfirmPasswordError.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!conpassword.equals(password)) {
+                etPassword.setBackgroundResource(R.drawable.edittext_error);
+                etConfirmPassword.setBackgroundResource(R.drawable.edittext_error);
+                tvConfirmPasswordError.setText("*Password and Confirm Password must be the same");
+                tvConfirmPasswordError.setVisibility(View.VISIBLE);
+                return;
+            }
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                    Cursor cursor = dbHelper.selectUser(user.getUid());
+                                    if (cursor == null){
+                                        boolean check = dbHelper.insertUser(user.getUid());
+                                        if (check){
+                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(username)
+                                                    .build();
+
+                                            user.updateProfile(profileUpdates)
+                                                    .addOnCompleteListener(updateTask -> {
+                                                        if (updateTask.isSuccessful()) {
+                                                            new Message("Registration Complete", this).showCompleteToast();
+                                                            etUsername.setText(null);
+                                                            etEmail.setText(null);
+                                                            etPassword.setText(null);
+                                                            etConfirmPassword.setText(null);
+                                                        }
+                                                    });
+                                        } else {
+                                            new Message("Registration Failed", this).showErrorToast();
+                                        }
+                                    }
+                                mAuth.signOut();
+                            }
+                        } else {
+                            String errorMsg = "Registration Failed!";
+                            Exception exception = task.getException();
+                            if (exception instanceof com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                                errorMsg = "This email is already registered. Try signing in instead.";
+                            }
+
+                            new Message(errorMsg, this).showErrorToast();
+                        }
+                    });
         }
     }
 
-    private boolean emailNotAvailable(String value) {
-        boolean notAvailable = false;
-        Cursor cursor = dbHelper.selectUserDataByEmail(value);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            notAvailable = true;
-        }
-        cursor.close();
-
-        return notAvailable;
+    public void restart(){
+        etUsername.setBackgroundResource(R.drawable.edittext_design);
+        etEmail.setBackgroundResource(R.drawable.edittext_design);
+        etPassword.setBackgroundResource(R.drawable.edittext_design);
+        etConfirmPassword.setBackgroundResource(R.drawable.edittext_design);
+        tvUsernameError.setText(null);
+        tvUsernameError.setVisibility(View.INVISIBLE);
+        tvEmailError.setText(null);
+        tvEmailError.setVisibility(View.INVISIBLE);
+        tvPasswordError.setText(null);
+        tvPasswordError.setVisibility(View.INVISIBLE);
+        tvConfirmPasswordError.setText(null);
+        tvConfirmPasswordError.setVisibility(View.INVISIBLE);
     }
 
     //check password strength
-    private boolean isPasswordValid(String pass) {
-        boolean isValid = false;
-
-        //regular expression to match the password criteria
-        String expression = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,12}$";
-        CharSequence input = pass;
-
-        Pattern pattern = Pattern.compile(expression);
-        Matcher matcher = pattern.matcher(input);
-
-        if (matcher.matches()) {
-            isValid = true;
-        }
-        return isValid;
+    public boolean isPasswordValid(String pass) {
+        String expression = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,100}$";
+        return pass.matches(expression);
     }
 }

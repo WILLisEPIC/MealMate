@@ -23,7 +23,7 @@
                 android:elevation="8dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:cardCornerRadius="20dp"
-                android:layout_margin="5dp">
+                android:layout_margin="10dp">
 
                 <ImageView
                     android:id="@+id/MealPhoto"
@@ -62,53 +62,93 @@
                 android:text="@string/meal_menu"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:layout_margin="10dp"
+                android:layout_margin="15dp"
                 app:layout_constraintTop_toBottomOf="@+id/cardView"/>
 
-            <TextView
-                android:id="@+id/IngredientTitle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="Ingredients"
-                android:gravity="center"
-                android:textColor="@color/milk"
-                android:background="@color/brown"
-                android:textSize="18sp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@+id/MealName"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/Ingredient"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/IngredientCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/IngredientTitle" />
+                app:cardCornerRadius="15dp"
+                app:cardBackgroundColor="@color/milk"
+                android:elevation="8dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginHorizontal="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/MealName">
 
-            <TextView
-                android:id="@+id/PreparationTitle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="Preparations"
-                android:gravity="center"
-                android:textColor="@color/milk"
-                android:background="@color/brown"
-                android:textSize="18sp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@+id/Ingredient"/>
+                <LinearLayout
+                    android:id="@+id/IngredientLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/Preparation"
+                    <TextView
+                        android:id="@+id/IngredientTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ingredients"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/Ingredient"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/PreparationCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dividerHeight="2dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="30dp"
+                app:cardCornerRadius="15dp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="@color/milk"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginHorizontal="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/delete"
-                app:layout_constraintTop_toBottomOf="@+id/PreparationTitle"/>
+                app:layout_constraintTop_toBottomOf="@+id/IngredientCard">
+
+                <LinearLayout
+                    android:id="@+id/PreparationLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/PreparationTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="Preparations"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/Preparation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:dividerHeight="2dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        app:layout_constraintTop_toBottomOf="@+id/PreparationTitle"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <Button
                 android:id="@+id/delete"

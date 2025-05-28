@@ -6,11 +6,17 @@ public class UserMealData {
     String MealName;
     byte[] MealPhoto;
 
-    public UserMealData(int mealId, String mealName, byte[] mealPhoto,int mealPhotoPos, int Status) {
+    public UserMealData(int mealId, String mealName,int mealPhotoPos, int Status) {
+        this.MealId = mealId;
+        this.MealName = mealName;
+        this.MealPhotoPos = mealPhotoPos;
+        this.Status = Status;
+    }
+
+    public UserMealData(int mealId, String mealName, byte[] mealPhoto, int Status) {
         this.MealId = mealId;
         this.MealName = mealName;
         this.MealPhoto = mealPhoto;
-        this.MealPhotoPos = mealPhotoPos;
         this.Status = Status;
     }
 

@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">MealMate</string>
-    <string name="meal_menu">Meal Plan</string>
+    <string name="meal_menu">Meal Name</string>
     <string name="grocery_menu">Groceries</string>
     <string name="profile_menu">Profile</string>
     <string name="none">None</string>
     <string name="signup"><u>Sign in</u></string>
+    <string name="login"><u>Login</u></string>
+    <string name="read_storage_request_code">100</string>
+    <string name="web_client_id">720031402737-6vm0m6gabfea5ff5097ionkoifk1bv7b.apps.googleusercontent.com</string>
 </resources>

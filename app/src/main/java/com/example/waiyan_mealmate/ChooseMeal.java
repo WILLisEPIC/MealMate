@@ -3,53 +3,51 @@ package com.example.waiyan_mealmate;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.waiyan_mealmate.Adapter.AddMealAdapter;
 import com.example.waiyan_mealmate.Adapter.MealAdapter;
 import com.example.waiyan_mealmate.DataHolder.MealData;
-import com.example.waiyan_mealmate.DataHolder.NewMeal;
 import com.example.waiyan_mealmate.Database.DBHelper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-import java.sql.Blob;
 import java.util.ArrayList;
 
 public class ChooseMeal extends AppCompatActivity {
 
-    DBHelper dbHelper;
-    RecyclerView MainCourseRecyclerView, SoupRecyclerView, SaladRecyclerView, DessertRecyclerView, UserMealRecyclerView;
-    ArrayList<MealData> MainCourseArrayList= new ArrayList<>();
-    ArrayList<MealData> SoupArrayList = new ArrayList<>();
-    ArrayList<MealData> DessertArrayList = new ArrayList<>();
-    ArrayList<MealData> SaladArrayList = new ArrayList<>();
-    ArrayList<NewMeal> UserMealArrayList = new ArrayList<>();
-    MealAdapter mainCourseAdapter, soupAdapter, dessertAdapter, saladAdapter;
-    AddMealAdapter userCreatedMealAdapter;
-    TextView user;
-    ImageButton back,user_add_meal;
-    MealMate mealMate;
-    int userID;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private DBHelper dbHelper;
+    private RecyclerView MainCourseRecyclerView, SoupRecyclerView, SaladRecyclerView, DessertRecyclerView, UserMealRecyclerView;
+    private ArrayList<MealData> MainCourseArrayList = new ArrayList<>();
+    private ArrayList<MealData> SoupArrayList = new ArrayList<>();
+    private ArrayList<MealData> DessertArrayList = new ArrayList<>();
+    private ArrayList<MealData> SaladArrayList = new ArrayList<>();
+    private ArrayList<MealData> UserMealArrayList = new ArrayList<>();
+    private MealAdapter mainCourseAdapter, soupAdapter, dessertAdapter, saladAdapter, userCreatedMealAdapter;
+    private TextView txtUser;
+    private ImageButton back,user_add_meal;
+    private String userID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose_meal);
 
-        //retrieve UserID from MealMate
-        mealMate = (MealMate) getApplication();
-        userID = mealMate.getUserId();
-
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        if (user != null){
+            userID = user.getUid();
+        }
         dbHelper = new DBHelper(this);
+
         MainCourseRecyclerView = findViewById(R.id.MainCourseRecyclerView);
         SoupRecyclerView = findViewById(R.id.SoupRecyclerView);
         SaladRecyclerView = findViewById(R.id.SaladRecyclerView);
@@ -74,52 +72,27 @@ public class ChooseMeal extends AppCompatActivity {
             }
         });
 
-        user = findViewById(R.id.UserMeal);
-
-        setMainCourseData();
-        setMainCourseRecyclerView();
-        setSoupData();
-        setSoupRecyclerView();
-        setSaladData();
-        setSaladRecyclerView();
-        setDessertData();
-        setDessertRecyclerView();
-        setUserMealData();
-        setUserMealRecyclerView();
+        txtUser = findViewById(R.id.UserMeal);
+        loadData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        //clear array data
-        MainCourseArrayList.clear();
-        SoupArrayList.clear();
-        SaladArrayList.clear();
-        DessertArrayList.clear();
-        UserMealArrayList.clear();
-
+        //clear array lists
+        clearArrayList();
         //refresh data
-        setMainCourseData();
-        setMainCourseRecyclerView();
-        setSoupData();
-        setSoupRecyclerView();
-        setSaladData();
-        setSaladRecyclerView();
-        setDessertData();
-        setDessertRecyclerView();
-        setUserMealData();
-        setUserMealRecyclerView();
+        loadData();
     }
 
     //Add Main Course Data to Main Course Array List
     private void setMainCourseData(){
-        Cursor cursor = dbHelper.selectMainCourseData();
+        Cursor cursor = dbHelper.selectMealByType("Main Course");
         if(cursor != null && cursor.moveToFirst()){
             do {
                 int MealID = cursor.getInt(cursor.getColumnIndexOrThrow("MealID"));
                 String MealName = cursor.getString(cursor.getColumnIndexOrThrow("MealName"));
-                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("Photo"));
+                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("PhotoPos"));
 
                 MainCourseArrayList.add(new MealData(MealID, MealName, MealPhoto));
             } while (cursor.moveToNext());
@@ -136,12 +109,12 @@ public class ChooseMeal extends AppCompatActivity {
 
     //Add Soup Data to Soup Array List
     private void setSoupData(){
-        Cursor cursor = dbHelper.selectSoupData();
+        Cursor cursor = dbHelper.selectMealByType("Soup");
         if(cursor != null && cursor.moveToFirst()){
             do {
                 int MealID = cursor.getInt(cursor.getColumnIndexOrThrow("MealID"));
                 String MealName = cursor.getString(cursor.getColumnIndexOrThrow("MealName"));
-                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("Photo"));
+                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("PhotoPos"));
 
                 SoupArrayList.add(new MealData(MealID, MealName, MealPhoto));
             } while (cursor.moveToNext());
@@ -158,12 +131,12 @@ public class ChooseMeal extends AppCompatActivity {
 
     //Add Salad Data to Salad Array List
     private void setSaladData(){
-        Cursor cursor = dbHelper.selectSaladData();
+        Cursor cursor = dbHelper.selectMealByType("Salad");
         if(cursor != null && cursor.moveToFirst()){
             do {
                 int MealID = cursor.getInt(cursor.getColumnIndexOrThrow("MealID"));
                 String MealName = cursor.getString(cursor.getColumnIndexOrThrow("MealName"));
-                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("Photo"));
+                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("PhotoPos"));
 
                 SaladArrayList.add(new MealData(MealID, MealName, MealPhoto));
             } while (cursor.moveToNext());
@@ -180,12 +153,12 @@ public class ChooseMeal extends AppCompatActivity {
 
     //Add Dessert Data to Dessert Array List
     private void setDessertData(){
-        Cursor cursor = dbHelper.selectDessertData();
+        Cursor cursor = dbHelper.selectMealByType("Dessert");
         if(cursor != null && cursor.moveToFirst()){
             do {
                 int MealID = cursor.getInt(cursor.getColumnIndexOrThrow("MealID"));
                 String MealName = cursor.getString(cursor.getColumnIndexOrThrow("MealName"));
-                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("Photo"));
+                int MealPhoto = cursor.getInt(cursor.getColumnIndexOrThrow("PhotoPos"));
 
                 DessertArrayList.add(new MealData(MealID, MealName, MealPhoto));
             } while (cursor.moveToNext());
@@ -209,18 +182,39 @@ public class ChooseMeal extends AppCompatActivity {
                 String MealName = cursor.getString(cursor.getColumnIndexOrThrow("MealName"));
                 byte[] MealPhoto = cursor.getBlob(cursor.getColumnIndexOrThrow("Photo"));
 
-                UserMealArrayList.add(new NewMeal(MealID, MealName, MealPhoto));
+                UserMealArrayList.add(new MealData(MealID, MealName, MealPhoto));
             } while (cursor.moveToNext());
             cursor.close();
         } else {
-            user.setVisibility(View.INVISIBLE);
+            txtUser.setVisibility(View.INVISIBLE);
         }
     }
 
     //set UserMeal RecyclerView Adapter
     private void setUserMealRecyclerView() {
-        userCreatedMealAdapter = new AddMealAdapter(this, UserMealArrayList, userID);
+        userCreatedMealAdapter = new MealAdapter(this, UserMealArrayList, userID);
         UserMealRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         UserMealRecyclerView.setAdapter(userCreatedMealAdapter);
+    }
+
+    private void loadData(){
+        setMainCourseData();
+        setMainCourseRecyclerView();
+        setSoupData();
+        setSoupRecyclerView();
+        setSaladData();
+        setSaladRecyclerView();
+        setDessertData();
+        setDessertRecyclerView();
+        setUserMealData();
+        setUserMealRecyclerView();
+    }
+
+    private void clearArrayList(){
+        MainCourseArrayList.clear();
+        SoupArrayList.clear();
+        SaladArrayList.clear();
+        DessertArrayList.clear();
+        UserMealArrayList.clear();
     }
 }

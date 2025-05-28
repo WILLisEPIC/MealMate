@@ -11,14 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.waiyan_mealmate.DataHolder.UserMealData;
 import com.example.waiyan_mealmate.Database.DBHelper;
 import com.example.waiyan_mealmate.MealDetail;
+import com.example.waiyan_mealmate.Message;
 import com.example.waiyan_mealmate.R;
 
 import java.util.ArrayList;
@@ -28,9 +29,9 @@ public class UserMealAdapter extends RecyclerView.Adapter<UserMealAdapter.ViewHo
     Context context;
     ArrayList<UserMealData> userMealData;
     DBHelper dbHelper;
-    int userID;
+    String userID;
 
-    public UserMealAdapter(Context context, ArrayList<UserMealData> userMealData, int userID) {
+    public UserMealAdapter(Context context, ArrayList<UserMealData> userMealData, String userID) {
         this.context = context;
         this.userMealData = userMealData;
         this.userID = userID;
@@ -46,24 +47,40 @@ public class UserMealAdapter extends RecyclerView.Adapter<UserMealAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull UserMealAdapter.ViewHolder holder, int position) {
-        holder.MealID.setText(String.valueOf(userMealData.get(position).getMealId()));
+        holder.tvMealID.setText(String.valueOf(userMealData.get(position).getMealId()));
         if (userMealData.get(position).getMealPhoto() == null && userMealData.get(position).getMealPhotoPos() != 0){
             int photo = userMealData.get(position).getMealPhotoPos();
-            holder.mealPhoto.setImageResource(photo);
+            holder.ivMealPhoto.setImageResource(photo);
         } else {
             byte[] photo = userMealData.get(position).getMealPhoto();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-            holder.mealPhoto.setImageBitmap(bitmap);
+            if (photo == null){
+                holder.ivMealPhoto.setImageResource(R.drawable.login_logo);
+            } else {
+                Glide.with(context)
+                        .asBitmap()
+                        .load(photo)
+                        .placeholder(R.drawable.login_logo)
+                        .error(R.drawable.login_logo)
+                        .into(holder.ivMealPhoto);
+            }
         }
-        holder.MealName.setText(userMealData.get(position).getMealName());
+        holder.tvMealName.setText(userMealData.get(position).getMealName());
 
         if(userMealData.get(position).getStatus() == 0){
-            holder.select.setImageResource(R.drawable.check_white);
-            holder.mealPhoto.setImageAlpha(255);
+            holder.ibSelect.setImageResource(R.drawable.check_white);
+            holder.ivMealPhoto.setImageAlpha(255);
         }else {
-            holder.select.setImageResource(R.drawable.check_black);
-            holder.mealPhoto.setImageAlpha(80);
+            holder.ibSelect.setImageResource(R.drawable.check_black);
+            holder.ivMealPhoto.setImageAlpha(80);
         }
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (userMealData.size() > 4 && position == userMealData.size() - 1) {
+            params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 320);
+        } else {
+            params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, params.bottomMargin);
+        }
+        holder.itemView.setLayoutParams(params);
     }
 
     @Override
@@ -72,17 +89,18 @@ public class UserMealAdapter extends RecyclerView.Adapter<UserMealAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView MealID, MealName;
-        ImageButton select;
-        ImageView mealPhoto;
+        private final TextView tvMealID, tvMealName;
+        private final ImageButton ibSelect;
+        private final ImageView ivMealPhoto;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            MealID = itemView.findViewById(R.id.MealID);
-            MealName = itemView.findViewById(R.id.meal_name);
-            select = itemView.findViewById(R.id.select);
-            mealPhoto = itemView.findViewById(R.id.meal_photo);
+            tvMealID = itemView.findViewById(R.id.MealID);
+            tvMealName = itemView.findViewById(R.id.meal_name);
+            ibSelect = itemView.findViewById(R.id.select);
+            ivMealPhoto = itemView.findViewById(R.id.meal_photo);
             itemView.setOnClickListener(this);
-            select.setOnClickListener(this);
+            ibSelect.setOnClickListener(this);
         }
 
         @Override
@@ -93,30 +111,30 @@ public class UserMealAdapter extends RecyclerView.Adapter<UserMealAdapter.ViewHo
                 UserMealData clickedMeal = userMealData.get(position);
                 int mealId = clickedMeal.getMealId();
                 if (v.getId() == R.id.select) {
-                    Cursor cursor = dbHelper.selectUserMealbyMealID(mealId, userID);
+                    Cursor cursor = dbHelper.selectUserMealData(mealId, userID);
                     if (cursor != null && cursor.moveToFirst()){
                         int Status = cursor.getInt(cursor.getColumnIndexOrThrow("Status"));
                         if(Status == 0){
                             boolean update = dbHelper.updateUserMealStatus(mealId, userID, 1);
                             if(update){
-                                select.setImageResource(R.drawable.check_black);
-                                mealPhoto.setImageAlpha(80);
+                                ibSelect.setImageResource(R.drawable.check_black);
+                                ivMealPhoto.setImageAlpha(80);
                             } else {
-                                showErrorToast("Error!");
+                                new Message("Error!", context).showErrorToast();
                             }
                         }else {
                             boolean update = dbHelper.updateUserMealStatus(mealId, userID, 0);
                             if(update){
-                                select.setImageResource(R.drawable.check_white);
-                                mealPhoto.setImageAlpha(255);
-                                mealPhoto.setColorFilter(null);
+                                ibSelect.setImageResource(R.drawable.check_white);
+                                ivMealPhoto.setImageAlpha(255);
+                                ivMealPhoto.setColorFilter(null);
                             } else {
-                                showErrorToast("Error!");
+                                new Message("Error!", context).showErrorToast();
                             }
                         }
                         cursor.close();
                     } else {
-                        showErrorToast("Error!");
+                        new Message("Error!", context).showErrorToast();
                     }
                 } else {
                     Intent intent = new Intent(context, MealDetail.class);
@@ -125,25 +143,5 @@ public class UserMealAdapter extends RecyclerView.Adapter<UserMealAdapter.ViewHo
                 }
             }
         }
-    }
-
-    private void showErrorToast(String message) {
-        View toastView = LayoutInflater.from(context).inflate(R.layout.error_toast, null);
-        TextView toastMessage = toastView.findViewById(R.id.error_toast_message);
-        toastMessage.setText(message);
-        Toast toast = new Toast(context);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.show();
-    }
-
-    private void showCompleteToast(String message) {
-        View toastView = LayoutInflater.from(context).inflate(R.layout.complete_toast, null);
-        TextView toastMessage = toastView.findViewById(R.id.complete_toast_message);
-        toastMessage.setText(message);
-        Toast toast = new Toast(context);
-        toast.setView(toastView);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.show();
     }
 }
