@@ -29,4 +29,14 @@ vibrant visuals, and more intuitive components.
 - **Firebase** - Implemented for user management and authentication
 ---
 
+# User Manual
+
+To try the MealMate app, first create a Firebase project and register an Android app using my package name 
+com.example.waiyan_mealmate. During registration, add the SHA-1 key and SHA-256 key of my app (you can 
+get it by running ./gradlew signingReport in the terminal) to the Firebase project. After registration, 
+download the google-services.json file in the Firebase project and place it in the app/ directory of my project.
+In strings.xml, replace the web_client_id with the OAuth 2.0 Web client ID found in your Firebase project under
+Authentication > Sign-in method > Google. Enable Email/Password and Google sign-in methods in Firebase Authentication. 
+Finally, connect a device or emulator and run the app.
+
 Feel free to clone the repository, explore the code, and contribute to the project!
