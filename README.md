@@ -1,28 +1,32 @@
-# 🍽️ MealMate Android Application (Java)
+# 🍽️ MealMate Android Application (Version 2.0)
 
-## Project Background
+This is the new version (v2.0) which has many updates.
 
-This application was developed for academic purpose and it took approximately two months to finish the development.
+--The followings updates were made
 
-## Project Overview
+## 1. Firebase Authentication
 
-**MealMate** is an Android application built in Java to help users efficiently manage their daily meals. The user interface was designed with a modern look and a focus on user-friendliness. All implemented features are functional and error-free. Some gesture controls are also implemented to maximize user experience. The app provides a variety of tools to simplify meal planning and promote healthy eating habits.
+The original version relied on SQLite for local user authentication. In v2.0, I have 
+integrated Firebase Authentication for more secure and cloud-based user login and registration.
+This enhances data reliability, reduces risk of data loss, and improves scalability.
 
-## Key Features
+## 2. Performance Optimization
 
-- **Meal Planning** – Select and organize meals for each day.
-- **Recipe Browsing** – Explore a collection of food recipes with ingredients and preparation steps.
-- **Custom Meals** – Add your own meals with ingredients, calorie information, and descriptions.
-- **Calorie Tracking** – Automatically calculate and display total calories consumed.
-- **Grocery List Generator** – Generate a shopping list based on selected meals.
+Data inserting and fetching were performed using proper methods to boost the system performace 
+and redundant or outdated code were replaced with more suitable installations to provide
+faster system.
 
-## Built With
+## 3. UI/UX enhancement
+
+To provide a better user experience, the interfaces have been redesigned with cleaner layouts, 
+vibrant visuals, and more intuitive components.
+
 
 - **Java** – Core development language
 - **Android Studio** – Integrated development environment (IDE)
 - **XML** – Used for designing the user interface
-- **SQLite** – Local database for storing meals, recipes, and user data
-
+- **SQLite** – Local database for storing meals, recipes, and some user data
+- **Firebase** - Implemented for user management and authentication
 ---
 
 Feel free to clone the repository, explore the code, and contribute to the project!
