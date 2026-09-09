@@ -10,382 +10,247 @@ import com.example.waiyan_mealmate.R;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private Context context;
+    private SQLiteDatabase db;
+    private Cursor cursor;
+
     public DBHelper(Context context) {
         super(context, "Mealmate.db", null, 1);
-        this.context = context;
+        db = this.getWritableDatabase();
     }
 
     //database creation
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE User(UserID INTEGER PRIMARY KEY AUTOINCREMENT,Username TEXT,Email TEXT,Password TEXT,Profile BLOB)");
-        db.execSQL("CREATE TABLE Meal(MealID INTEGER PRIMARY KEY AUTOINCREMENT,MealName TEXT,Photo BLOB,Type Text,UserID INTEGER,FOREIGN KEY (UserID) REFERENCES User(UserID))");
-        db.execSQL("CREATE TABLE Ingredient(IngredientID INTEGER PRIMARY KEY AUTOINCREMENT,IngredientName TEXT,Amount TEXT,Type TEXT,MealID INTEGER,FOREIGN KEY (MealID) REFERENCES Meal(MealID))");
-        db.execSQL("CREATE TABLE Preparation(PreparationID INTEGER PRIMARY KEY AUTOINCREMENT,PreparationDetail TEXT,MealID INTEGER,FOREIGN KEY (MealID) REFERENCES Meal(MealID))");
-        db.execSQL("CREATE TABLE UserMeal(UserMealID INTEGER PRIMARY KEY AUTOINCREMENT,Status INTEGER DEFAULT 0,UserID INTEGER,MealID INTEGER,FOREIGN KEY (UserID) REFERENCES User(UserID),FOREIGN KEY (MealID) REFERENCES Meal(MealID))");
-        db.execSQL("CREATE TABLE UserIngredient(UserIngredientID INTEGER PRIMARY KEY AUTOINCREMENT,IngredientID INTEGER,Status INTEGER DEFAULT 0,UserID INTEGER,FOREIGN KEY (IngredientID) REFERENCES Ingredient(IngredientID),FOREIGN KEY (UserID) REFERENCES User(UserID))");
+        db.execSQL("CREATE TABLE User(UserID TEXT PRIMARY KEY, Photo BLOB)");
+        db.execSQL("CREATE TABLE Meal(MealID INTEGER PRIMARY KEY AUTOINCREMENT, MealName TEXT, PhotoPos INTEGER, Photo BLOB, Type TEXT, UserID TEXT, FOREIGN KEY (UserID) REFERENCES User(UserID))");
+        db.execSQL("CREATE TABLE Ingredient(IngredientID INTEGER PRIMARY KEY AUTOINCREMENT, IngredientName TEXT, Amount TEXT, Type TEXT, MealID INTEGER, FOREIGN KEY (MealID) REFERENCES Meal(MealID))");
+        db.execSQL("CREATE TABLE Preparation(PreparationID INTEGER PRIMARY KEY AUTOINCREMENT, PreparationDetail TEXT,MealID INTEGER, FOREIGN KEY (MealID) REFERENCES Meal(MealID))");
+        db.execSQL("CREATE TABLE UserMeal(UserID TEXT, MealID INTEGER, Status INTEGER DEFAULT 0, FOREIGN KEY (MealID) REFERENCES Meal(MealID), FOREIGN KEY (UserID) REFERENCES User(UserID), PRIMARY KEY (UserID, MealID))");
+        db.execSQL("CREATE TABLE Grocery(UserID TEXT, IngredientID INTEGER, Status INTEGER DEFAULT 0, FOREIGN KEY (IngredientID) REFERENCES Ingredient(IngredientID), FOREIGN KEY (UserID) REFERENCES User(UserID), PRIMARY KEY (UserID, IngredientID))");
         onCreateMeals(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS User");
-        db.execSQL("DROP TABLE IF EXISTS Meal");
-        db.execSQL("DROP TABLE IF EXISTS Ingredient");
-        db.execSQL("DROP TABLE IF EXISTS Preparation");
+        db.execSQL("DROP TABLE IF EXISTS Grocery");
         db.execSQL("DROP TABLE IF EXISTS UserMeal");
-        db.execSQL("DROP TABLE IF EXISTS UserIngredient");
+        db.execSQL("DROP TABLE IF EXISTS Preparation");
+        db.execSQL("DROP TABLE IF EXISTS Ingredient");
+        db.execSQL("DROP TABLE IF EXISTS Meal");
+        db.execSQL("DROP TABLE IF EXISTS User");
+        onCreate(db);
     }
 
-    //Insert User Data
-    public boolean insertUserData(String Username,String Email,String Password){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Username", Username);
-        contentValues.put("Email", Email);
-        contentValues.put("Password", Password);
-
-        long result = db.insert("User", null, contentValues);
-
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    //Update User Data
-    public boolean updateUserData(int UserID,String Username,String Email,String Password,byte[] Profile){
-        SQLiteDatabase db=this.getWritableDatabase();
-        ContentValues contentValues=new ContentValues();
-        contentValues.put("Username", Username);
-        contentValues.put("Email", Email);
-        contentValues.put("Password", Password);
-        contentValues.put("Profile", Profile);
-        Cursor cursor=db.rawQuery("SELECT * FROM User WHERE UserID=?", new String[]{String.valueOf(UserID)});
-        if(cursor.getCount()>0) {
-            long result = db.update("User", contentValues, "UserID=?", new String[]{String.valueOf(UserID)});
-            cursor.close();
-            if (result == -1) return false;
-            else return true;
-        }else {
-            cursor.close();
-            return false;
-        }
-    }
-
-    //Select User Data
-    public Cursor selectUserData(String email, String password) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM User WHERE Email = ? AND Password = ?";
-        Cursor cursor = db.rawQuery(query, new String[] {email, password});
-        return cursor;
-    }
-
-    //Select User Data By ID
-    public Cursor selectUserDataByID(int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public Cursor selectUser(String UserID){
         String query = "SELECT * FROM User WHERE UserID = ?";
-        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(UserID)});
+        cursor = db.rawQuery(query, new String[]{UserID});
         return cursor;
     }
 
-    //Select User Data By email
-    public Cursor selectUserDataByEmail(String email) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM User WHERE Email = ?";
-        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(email)});
-        return cursor;
-    }
-
-    //Select Meal Data
-    public Cursor selectMealData(int MealID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE MealID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(MealID)});
-        return cursor;
-    }
-
-    //Select Main course Data
-    public Cursor selectMainCourseData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE Type = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {"Main Course"});
-        return cursor;
-    }
-
-    //Select Soup Data
-    public Cursor selectSoupData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE Type = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {"Soup"});
-        return cursor;
-    }
-
-    //Select Salad Data
-    public Cursor selectSaladData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE Type = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {"Salad"});
-        return cursor;
-    }
-
-    //Select Dessert Data
-    public Cursor selectDessertData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE Type = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {"Dessert"});
-        return cursor;
-    }
-
-    //Select MealPlan Data
-    public Cursor selectUserMealData(int MealID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM UserMeal WHERE UserID = ? AND MealID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(UserID), String.valueOf(MealID)});
-        return cursor;
-    }
-
-    //Select User Created Meal Data
-    public Cursor selectUserCreatedMealData(int MealID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE UserID = ? AND MealID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(UserID), String.valueOf(MealID)});
-        return cursor;
-    }
-
-    //Insert MealPlan Data
-    public Boolean insertUserMeal(int MealID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public boolean insertUser(String UserID){
         ContentValues contentValues = new ContentValues();
         contentValues.put("UserID", UserID);
-        contentValues.put("MealID", MealID);
-
-        long result = db.insert("UserMeal", null, contentValues);
-
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        long result = db.insert("User", null, contentValues);
+        return result != -1;
     }
 
-    //Delete Meal Data
-    public Boolean deleteMeal(int MealID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete("Meal", "MealID = ? AND UserID = ?",new String[]{String.valueOf(MealID), String.valueOf(UserID)});
-
-        if (result > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //Delete Ingredient Data
-    public Boolean deleteIngredient(int MealID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete("Ingredient", "MealID = ?",new String[]{String.valueOf(MealID)});
-
-        if (result > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //Delete Preparation Data
-    public Boolean deletePreparation(int MealID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete("Preparation", "MealID = ?",new String[]{String.valueOf(MealID)});
-
-        if (result > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //Delete User Meal Data
-    public Boolean deleteUserMeal(int MealID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete("UserMeal", "MealID = ? AND UserID = ?",new String[]{String.valueOf(MealID), String.valueOf(UserID)});
-
-        if (result > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //Select Meal Ingredient
-    public Cursor selectMealIngredient(int MealID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Ingredient WHERE MealID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(MealID)});
+    public Cursor selectUserPhoto(String UserID){
+        String query = "SELECT Photo FROM User WHERE UserID = ?";
+        cursor = db.rawQuery(query, new String[]{UserID});
         return cursor;
     }
 
-    //Select Meal Preparation
-    public Cursor selectMealPreparation(int MealID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Preparation WHERE MealID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(MealID)});
-        return cursor;
-    }
-
-    //Select User Meal
-    public Cursor selectUserCreatedMeal(int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM Meal WHERE UserID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(UserID)});
-        return cursor;
-    }
-
-    //Select User Selected Meal
-    public Cursor selectAllUserMealData(int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM UserMeal WHERE UserID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(UserID)});
-        return cursor;
-    }
-
-    //Select User Meal by MealID
-    public Cursor selectUserMealbyMealID(int MealID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM UserMeal WHERE MealID = ? AND UserID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(MealID) ,String.valueOf(UserID)});
-        return cursor;
-    }
-
-    //Update Status of UserMeal
-    public boolean updateUserMealStatus(int MealID, int UserID,  int Status){
-        SQLiteDatabase db=this.getWritableDatabase();
-        ContentValues contentValues=new ContentValues();
-        contentValues.put("Status", Status);
-        Cursor cursor=db.rawQuery("SELECT * FROM UserMeal WHERE MealID = ? AND UserID = ?", new String[]{String.valueOf(MealID), String.valueOf(UserID)});
-        if(cursor.moveToFirst()) {
-            long result = db.update("UserMeal", contentValues, "MealID = ? AND UserID = ?", new String[]{String.valueOf(MealID), String.valueOf(UserID)});
-            if (result == -1) return false;
-            else return true;
+    public boolean updateUserPhoto(String UserID, byte[] Photo){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Photo", Photo);
+        cursor = selectUser(UserID);
+        if (cursor.moveToFirst()){
+            long result = db.update("User", contentValues, "UserID = ?", new String[]{UserID});
+            return result != -1;
         }
         cursor.close();
         return false;
     }
 
-    //Update Status of UserIngredient
-    public boolean updateUserIngredientStatus(int IngredientID, int Status){
-        SQLiteDatabase db = this.getWritableDatabase();
+    //Select Meal Data
+    public Cursor selectMealData(int MealID) {
+        String query = "SELECT * FROM Meal WHERE MealID = ?";
+        cursor = db.rawQuery(query,new String[] {String.valueOf(MealID)});
+        return cursor;
+    }
+
+    //Select Main course Data
+    public Cursor selectMealByType(String type) {
+        String query = "SELECT * FROM Meal WHERE Type = ?";
+        cursor = db.rawQuery(query,new String[] {type});
+        return cursor;
+    }
+
+    //Select MealPlan Data
+    public Cursor selectUserMealData(int MealID, String UserID) {
+        String query = "SELECT * FROM UserMeal WHERE UserID = ? AND MealID = ?";
+        cursor = db.rawQuery(query, new String[] {UserID, String.valueOf(MealID)});
+        return cursor;
+    }
+
+    //Select User Created Meal Data
+    public Cursor selectUserCreatedMealData(int MealID, String UserID) {
+        String query = "SELECT * FROM Meal WHERE UserID = ? AND MealID = ?";
+        cursor = db.rawQuery(query,new String[] {UserID, String.valueOf(MealID)});
+        return cursor;
+    }
+
+    //Insert MealPlan Data
+    public Boolean insertUserMeal(int MealID, String UserID) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("UserID", UserID);
+        contentValues.put("MealID", MealID);
+        long result = db.insert("UserMeal", null, contentValues);
+        return result != -1;
+    }
+
+    //Delete Meal Data
+    public Boolean deleteMeal(int MealID, String UserID) {
+        long result = db.delete("Meal", "MealID = ? AND UserID = ?",new String[]{String.valueOf(MealID), UserID});
+        return result > 0;
+    }
+
+    //Delete Ingredient Data
+    public Boolean deleteIngredient(int MealID) {
+        long result = db.delete("Ingredient", "MealID = ?",new String[]{String.valueOf(MealID)});
+        return result > 0;
+    }
+
+    //Delete Preparation Data
+    public Boolean deletePreparation(int MealID) {
+        long result = db.delete("Preparation", "MealID = ?",new String[]{String.valueOf(MealID)});
+        return result > 0;
+    }
+
+    //Delete User Meal Data
+    public Boolean deleteUserMeal(int MealID, String UserID) {
+        long result = db.delete("UserMeal", "MealID = ? AND UserID = ?",new String[]{String.valueOf(MealID), UserID});
+        return result > 0;
+    }
+
+    //Select Meal Ingredient
+    public Cursor selectMealIngredient(int MealID) {
+        String query = "SELECT * FROM Ingredient WHERE MealID = ?";
+        cursor = db.rawQuery(query,new String[] {String.valueOf(MealID)});
+        return cursor;
+    }
+
+    //Select Meal Preparation
+    public Cursor selectMealPreparation(int MealID) {
+        String query = "SELECT * FROM Preparation WHERE MealID = ?";
+        cursor = db.rawQuery(query,new String[] {String.valueOf(MealID)});
+        return cursor;
+    }
+
+    //Select User Meal
+    public Cursor selectUserCreatedMeal(String UserID) {
+        String query = "SELECT * FROM Meal WHERE UserID = ?";
+        cursor = db.rawQuery(query,new String[] {UserID});
+        return cursor;
+    }
+
+    //Select User Selected Meal
+    public Cursor selectAllUserMealData(String UserID) {
+        String query = "SELECT * FROM UserMeal WHERE UserID = ?";
+        cursor = db.rawQuery(query,new String[] {UserID});
+        return cursor;
+    }
+
+    //Update Status of UserMeal
+    public boolean updateUserMealStatus(int MealID, String UserID,  int Status){
+        ContentValues contentValues=new ContentValues();
+        contentValues.put("Status", Status);
+        cursor = selectUserMealData(MealID, UserID);
+        if(cursor.moveToFirst()) {
+            long result = db.update("UserMeal", contentValues, "MealID = ? AND UserID = ?", new String[]{String.valueOf(MealID), UserID});
+            return result != -1;
+        }
+        cursor.close();
+        return false;
+    }
+
+    //Update Status of Grocery
+    public boolean updateGroceryStatus(int IngredientID, int Status){
         ContentValues contentValues = new ContentValues();
         contentValues.put("Status", Status);
-
-        int check = db.update("UserIngredient", contentValues, "IngredientID = ?", new String[]{String.valueOf(IngredientID)});
-
+        int check = db.update("Grocery", contentValues, "IngredientID = ?", new String[]{String.valueOf(IngredientID)});
         return check > 0;
     }
 
     //Insert Ingredient Data to User Ingredient
-    public Boolean insertUserIngredient(int IngredientID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public Boolean insertGrocery(int IngredientID, String UserID) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("IngredientID", IngredientID);
         contentValues.put("UserID", UserID);
-
-        long result = db.insert("UserIngredient", null, contentValues);
-
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        long result = db.insert("Grocery", null, contentValues);
+        return result != -1;
     }
 
     //Insert Ingredient Data to User Ingredient
-    public Boolean deleteUserIngredient(int IngredientID, int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete("UserIngredient", "IngredientID = ? AND UserID = ?", new String[]{String.valueOf(IngredientID), String.valueOf(UserID)});
-
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+    public Boolean deleteGrocery(int IngredientID, String UserID) {
+        long result = db.delete("Grocery", "IngredientID = ? AND UserID = ?", new String[]{String.valueOf(IngredientID), UserID});
+        return result != -1;
     }
 
     //Insert Meal Data
-    public long insertMealData(String Name,byte[] Photo,String Type,int UserID){
-        SQLiteDatabase db = this.getWritableDatabase();
+    public long insertMealData(String Name, byte[] Photo, String Type, String UserID){
         ContentValues contentValues = new ContentValues();
         contentValues.put("MealName", Name);
         contentValues.put("Photo", Photo);
         contentValues.put("Type", Type);
-        if (UserID != 0) {
+        if (!UserID.isEmpty()) {
             contentValues.put("UserID", UserID);
         } else {
             contentValues.putNull("UserID");
         }
-        long mealID = db.insert("Meal", null, contentValues);
-
-        return mealID;
+        return db.insert("Meal", null, contentValues);
     }
 
     //Insert Ingredient Data
     public boolean insertIngredientData(String Ingredient,String Amount,String Type,int MealID){
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("IngredientName", Ingredient);
         contentValues.put("Amount", Amount);
         contentValues.put("Type", Type);
         contentValues.put("MealID", MealID);
         long result = db.insert("Ingredient", null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
     }
 
     //Insert Preparation Data
     public boolean insertPreparationData(String Preparation,int MealID){
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PreparationDetail", Preparation);
         contentValues.put("MealID", MealID);
         long result = db.insert("Preparation", null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
     }
 
     //Select User Selected Meal
-    public Cursor selectUserIngredient(int UserID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM UserIngredient WHERE UserID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(UserID)});
-        return cursor;
+    public Cursor selectGrocery(String UserID) {
+        String query = "SELECT * FROM Grocery WHERE UserID = ?";
+        return db.rawQuery(query,new String[] {UserID});
     }
 
     //Select User Selected Meal
     public Cursor selectIngredientByType(int IngredientId, String Type) {
-        SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM Ingredient WHERE IngredientID = ? AND Type = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(IngredientId), Type});
-        return cursor;
+        return db.rawQuery(query,new String[] {String.valueOf(IngredientId), Type});
     }
 
     //Select User Selected Meal
     public Cursor selectIngredient(int IngredientID) {
-        SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM Ingredient WHERE IngredientID = ?";
-        Cursor cursor = db.rawQuery(query,new String[] {String.valueOf(IngredientID)});
-        return cursor;
+        return db.rawQuery(query,new String[] {String.valueOf(IngredientID)});
     }
 
     //Meals Insertion
-    public void onCreateMeals(SQLiteDatabase db) {
+    private void onCreateMeals(SQLiteDatabase db) {
         db.beginTransaction();
         try {
             //using object array for both string and integer data
@@ -665,7 +530,7 @@ public class DBHelper extends SQLiteOpenHelper {
             for (int i = 0; i < meals.length; i++) {
                 ContentValues mealValues = new ContentValues();
                 mealValues.put("MealName", (String) meals[i][0]);
-                mealValues.put("Photo", (Integer) meals[i][1]);
+                mealValues.put("PhotoPos", (Integer) meals[i][1]);
                 mealValues.put("Type", (String) meals[i][2]);
                 mealValues.putNull("UserID"); //set the userID null as this meal is not inserted by the user
 

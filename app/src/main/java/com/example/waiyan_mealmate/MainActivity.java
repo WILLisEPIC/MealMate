@@ -7,32 +7,24 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.waiyan_mealmate.Fragment.GroceryFragment;
 import com.example.waiyan_mealmate.Fragment.MealFragment;
 import com.example.waiyan_mealmate.Fragment.ProfileFragment;
 import com.example.waiyan_mealmate.databinding.ActivityMainBinding;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
     private ActivityMainBinding binding;
-    private SharedPreferences sharedPreferences;
     private GestureDetector gestureDetector;
     private int current = 0;
     private final Fragment[] fragments = {
@@ -44,12 +36,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //storing user login/logout section
-        sharedPreferences = getSharedPreferences("MealMate", MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         gestureDetector = new GestureDetector(this, new GestureListener());
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
-        if (isLoggedIn) {
+        if (user != null) {
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
             //for gesture listening
@@ -68,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             });
         } else {
-            //If user hasn't logged in, proceed to welcome screen
             setContentView(R.layout.welcome_view);
 
             //to login form
@@ -106,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
         return gestureDetector.onTouchEvent(event) || super.dispatchTouchEvent(event);
     }
 
+    //Listen user gestures on screen
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             float diffX = e2.getX() - e1.getX();

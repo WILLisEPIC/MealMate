@@ -23,13 +23,12 @@ public class PreparationAdapter extends RecyclerView.Adapter<PreparationAdapter.
         this.preparationArrayList = ingredientArrayList;
     }
 
-
     @NonNull
     @Override
     public PreparationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.show_preparation, parent, false);
-        return new PreparationAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class PreparationAdapter extends RecyclerView.Adapter<PreparationAdapter.
         return preparationArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView step, preparation;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
