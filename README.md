@@ -1,42 +1,28 @@
-# 🍽️ MealMate Android Application (Version 2.0)
+# 🍽️ MealMate Android Application (Java)
 
-This is the new version (v2.0) which has many updates.
+## Project Background
 
---The followings updates were made
+This application was developed for academic purpose and it took approximately two months to finish the development.
 
-## 1. Firebase Authentication
+## Project Overview
 
-The original version relied on SQLite for local user authentication. In v2.0, I have 
-integrated Firebase Authentication for more secure and cloud-based user login and registration.
-This enhances data reliability, reduces risk of data loss, and improves scalability.
+**MealMate** is an Android application built in Java to help users efficiently manage their daily meals. The user interface was designed with a modern look and a focus on user-friendliness. All implemented features are functional and error-free. Some gesture controls are also implemented to maximize user experience. The app provides a variety of tools to simplify meal planning and promote healthy eating habits.
 
-## 2. Performance Optimization
+## Key Features
 
-Data inserting and fetching were performed using proper methods to boost the system performace 
-and redundant or outdated code were replaced with more suitable installations to provide
-faster system.
+- **Meal Planning** – Select and organize meals for each day.
+- **Recipe Browsing** – Explore a collection of food recipes with ingredients and preparation steps.
+- **Custom Meals** – Add your own meals with ingredients, calorie information, and descriptions.
+- **Calorie Tracking** – Automatically calculate and display total calories consumed.
+- **Grocery List Generator** – Generate a shopping list based on selected meals.
 
-## 3. UI/UX enhancement
-
-To provide a better user experience, the interfaces have been redesigned with cleaner layouts, 
-vibrant visuals, and more intuitive components.
-
+## Built With
 
 - **Java** – Core development language
 - **Android Studio** – Integrated development environment (IDE)
 - **XML** – Used for designing the user interface
-- **SQLite** – Local database for storing meals, recipes, and some user data
-- **Firebase** - Implemented for user management and authentication
+- **SQLite** – Local database for storing meals, recipes, and user data
+
 ---
-
-# User Manual
-
-To try the MealMate app, first create a Firebase project and register an Android app using my package name 
-com.example.waiyan_mealmate. During registration, add the SHA-1 key and SHA-256 key of my app (you can 
-get it by running ./gradlew signingReport in the terminal) to the Firebase project. After registration, 
-download the google-services.json file in the Firebase project and place it in the app/ directory of my project.
-In strings.xml, replace the web_client_id with the OAuth 2.0 Web client ID found in your Firebase project under
-Authentication > Sign-in method > Google. Enable Email/Password and Google sign-in methods in Firebase Authentication. 
-Finally, connect a device or emulator and run the app.
 
 Feel free to clone the repository, explore the code, and contribute to the project!
